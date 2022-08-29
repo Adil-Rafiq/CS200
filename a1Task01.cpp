@@ -34,11 +34,18 @@ int main()
     }
     file.close();
 
-    Students students[size], info;
+    // Arrays allocated on stack should have size known at compile time.
+    // In this case, we have to calculate the size at run time so we do not know size at compile time
+    // The only solution is to allocate memory on heap i.e. dynamic memory allocation.
+    Students* students = new Students[size];
+    Students info;
     students->inputStudentInfo(students, size);
     students->sort(students, size);
     students->assignGrade(students, size);
     students->writeToFile(students, size);
+    
+    // Memory allocated on heap needs to returned mannualy.
+    delete[] students;
 
     return 0;
 }
@@ -79,11 +86,14 @@ void Students::assignGrade(Students students[], int size)
     {
         if (students[i].marks >= 85)
             students[i].grade = 'A';
-        else if (students[i].marks >= 75 && students[i].marks < 85)
+        /* Better control flow. you dont have to check if marks are below 85 because the program flow will 
+        reach this 2nd condition only when first condition was false. i.e. marks were less than 85.
+        */
+        else if (students[i].marks >= 75)
             students[i].grade = 'B';
-        else if (students[i].marks >= 65 && students[i].marks < 75)
+        else if (students[i].marks >= 65)
             students[i].grade = 'C';
-        else if (students[i].marks >= 50 && students[i].marks < 65)
+        else if (students[i].marks >= 50)
             students[i].grade = 'D';
         else
             students[i].grade = 'F';
